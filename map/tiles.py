@@ -1,5 +1,5 @@
 from panda3d.core import NodePath
-from globals import Globals
+from globals import Globals, standardShader
 from enum import IntEnum
 
 
@@ -21,6 +21,7 @@ class BaseTile(NodePath):
         super().__init__(name)
         self._walkable = is_walkable
         self._can_edit = can_edit
+        self.setShader(standardShader)
         pass
 
     @property

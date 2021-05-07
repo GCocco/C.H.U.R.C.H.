@@ -1,11 +1,22 @@
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from typing import Tuple
-
 from panda3d.core import NodePath
+
+from globals import Globals
 from utils import dijkstra
 from map.tiles import TileMap
+
+
+class TerrainError(Exception):
+    def __init__(self, msg):
+        super().__init__(msg)
+        pass
+    pass
+
+
+class MatrixError(Exception):
+    def __init__(self, msg):
+        super().__init__(msg)
+        pass
+    pass
 
 
 # la matrice passata è nella forma List[Dict[Tuple[int, int], IntEnum]]
@@ -13,17 +24,29 @@ from map.tiles import TileMap
 class ChurchTerrain(NodePath):
     def __init__(self, matrix):
         super().__init__("ChurchTerrain")
-        self._matrix = {}
+        self._focusXY: tuple[int, int] = (0, 0)
+        self._matrix: dict[tuple[int, int], object] = {}
 
         for tile in matrix:
+            if tile in self._matrix:
+                raise TerrainError(f'tried to build in {tile}, already {self._matrix[tile]} there')
+            if tile[0] < 0 or tile[1] < 0:
+                raise MatrixError(f'error building in {tile} is not allowed. can only build on positive coordinates')
             t = matrix[tile]()
             t.reparentTo(self)
             t.setPos(tile[0], tile[1])
             self._matrix[tile] = t
+        Globals.setTerrain(self)
         pass
 
-    def path(self, start_node, target_node):
-        pass
+    def focus(self, x: int, y: int):
+        print(x, y)
+        return
+
+    def path(self, start_node: tuple[int, int], target_node: tuple[int, int]) -> list[tuple[int, int]]:
+        if start_node in self._matrix:
+            return dijkstra(start_node, target_node, self._matrix)
+        return []
 
     pass
 
@@ -48,8 +71,4 @@ class ChurchLvl1(ChurchTerrain):
 
         pass
 
-    def path(self, start_node: tuple[int, int], target_node: tuple[int, int]) -> list[tuple[int, int]]:
-        if start_node in self._matrix:
-            return dijkstra(start_node, target_node, self._matrix)
-        return []
     pass

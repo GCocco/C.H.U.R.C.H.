@@ -1,22 +1,56 @@
 from typing import Union, TYPE_CHECKING
+from panda3d.core import Shader
 
 
 if TYPE_CHECKING:
     from main import Base
     from panda3d.core import NodePath
+    from map.terrains import ChurchTerrain
+
+
+# noinspection PyArgumentList
+standardShader: Shader = Shader.load(Shader.SL_GLSL,
+                                     vertex="./shaders/standard.vert",
+                                     fragment="./shaders/standard.frag")
 
 
 class Globals:
-    __base: Union['Base', None] = None
+    _base: Union['Base', None] = None
+    _terrain: 'ChurchTerrain' = None
+    _focus_coord: tuple[int, int] = 0, 0
 
     @staticmethod
-    def init(base):
-        assert Globals.__base is None
-        Globals.__base = base
+    def focus(pos: tuple[float, float, float]):
+        if pos[0] < 0 or pos[1] < 0:
+            Globals._focus_coord = (None, None)
+            return
+        if int(pos[0]) is not Globals._focus_coord[0] or int(pos[1]) is not Globals._focus_coord[1]:
+            Globals._focus_coord = (int(pos[0]), int(pos[1]))
+            return
         return
 
     @staticmethod
+    def onClick():
+        print(Globals._focus_coord)
+        return
+
+    @staticmethod
+    def init(base):
+        assert Globals._base is None
+        Globals._base = base
+        return
+
+    @staticmethod
+    def setTerrain(terrain: 'ChurchTerrain'):
+        Globals._terrain = terrain
+        return
+
+    @staticmethod
+    def getPath(start_node, target_node):
+        return Globals._terrain.path(start_node, target_node)
+
+    @staticmethod
     def loadModel(model_path) -> 'NodePath':
-        return Globals.__base.loader.loadModel(model_path)
+        return Globals._base.loader.loadModel(model_path)
 
     pass
