@@ -61,7 +61,7 @@ class ChurchLvl1(ChurchTerrain):
                           (2, 0): TileMap.Empty,
                           (3, 0): TileMap.Empty,
                           (1, 1): TileMap.Empty,
-                          (2, 1): TileMap.Empty,
+                          (2, 1): TileMap.Wall,
                           (3, 1): TileMap.Empty,
                           (1, 2): TileMap.Empty,
                           (2, 2): TileMap.Empty,

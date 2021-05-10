@@ -1,5 +1,5 @@
 from direct.actor.Actor import Actor
-from panda3d.core import Shader
+from direct.interval.IntervalGlobal import Sequence
 
 from globals import Globals, standardShader
 
@@ -9,7 +9,7 @@ class ChurchActor(Actor):
         super().__init__(model, anim)
         pass
 
-    def setPos(self, x: int, y: int) -> None:
+    def move(self, x: int, y: int) -> None:
         super().setPos(x+.5, y+.5, 0.0)
         return
 
@@ -18,9 +18,21 @@ class ChurchActor(Actor):
 
     def walk(self, destination: tuple[int, int]):
         path = Globals.getPath(self.getCoord(), destination)
-        print(path)
-        pass
+        if not path:
+            return
 
+        actor_seq = Sequence()
+        print(path)
+        path.pop()
+        while path:
+            node = path.pop()
+            print(node)
+            actor_seq.append(self.posInterval(.3, (node[0] + .5, node[1] + .5, .0), name="walk"))
+            pass
+        print(actor_seq)
+        actor_seq.start()
+
+        pass
     pass
 
 

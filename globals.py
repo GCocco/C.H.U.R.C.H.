@@ -18,6 +18,11 @@ class Globals:
     _base: Union['Base', None] = None
     _terrain: 'ChurchTerrain' = None
     _focus_coord: tuple[int, int] = 0, 0
+    _on_click_func = lambda x: print(x)
+
+    @staticmethod
+    def getCoord() -> tuple[int, int]:
+        return Globals._focus_coord
 
     @staticmethod
     def focus(pos: tuple[float, float, float]):
@@ -31,8 +36,14 @@ class Globals:
 
     @staticmethod
     def onClick():
-        print(Globals._focus_coord)
+        if Globals._focus_coord is not (None, None):
+            Globals._on_click_func(Globals._focus_coord)
+            pass
         return
+
+    @staticmethod
+    def setOnClickFunction(on_click_func):
+        Globals._on_click_func = on_click_func
 
     @staticmethod
     def init(base):

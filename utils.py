@@ -1,15 +1,11 @@
 Coord = tuple[int, int]
 
 
-def adjacent_nodes(coord: Coord) -> tuple[Coord, Coord, Coord, Coord, Coord, Coord, Coord, Coord]:
+def adjacent_nodes(coord: Coord) -> tuple[Coord, Coord, Coord, Coord]:
     return ((coord[0] - 1, coord[1]),
             (coord[0] + 1, coord[1]),
             (coord[0], coord[1] - 1),
-            (coord[0], coord[1] + 1),
-            (coord[0] - 1, coord[1] - 1),
-            (coord[0] - 1, coord[1] + 1),
-            (coord[0] + 1, coord[1] - 1),
-            (coord[0] + 1, coord[1] + 1))
+            (coord[0], coord[1] + 1))
 
 
 def dijkstra(start_node: Coord, target_node: Coord, matrix: dict[Coord, object]) -> list[Coord]:
@@ -24,7 +20,9 @@ def dijkstra(start_node: Coord, target_node: Coord, matrix: dict[Coord, object])
         dist = distances[inspected] + 1
 
         for adj in adjacent_nodes(inspected):
-            if adj in matrix and adj not in traversed and matrix[adj].isWalkable:
+            if adj in matrix and matrix[adj].isWalkable:
+                if adj not in traversed:
+                    q.append(adj)
                 if adj in distances:
                     if distances[adj] > dist:
                         distances[adj] = dist
@@ -36,12 +34,14 @@ def dijkstra(start_node: Coord, target_node: Coord, matrix: dict[Coord, object])
                     path[adj] = inspected
                     pass
                 pass
-                q.append(adj)
+
             pass
         traversed.append(inspected)
         pass
     t: Coord = target_node
     ret_path: list[Coord] = [target_node]
+    if t not in path:
+        return []
     while t:
         ret_path.append(path[t])
         t = path[t]
