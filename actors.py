@@ -1,6 +1,9 @@
 from direct.actor.Actor import Actor
+from direct.interval.FunctionInterval import Func
 from direct.interval.IntervalGlobal import Sequence
+from direct.interval.MetaInterval import Parallel
 
+import utils
 from globals import Globals, standardShader
 
 
@@ -24,12 +27,16 @@ class ChurchActor(Actor):
         actor_seq = Sequence()
         print(path)
         path.pop()
+        node = None
         while path:
+            pos = node
             node = path.pop()
-            print(node)
-            actor_seq.append(self.posInterval(.3, (node[0] + .5, node[1] + .5, .0), name="walk"))
+            if pos:
+                actor_seq.append(Parallel(Func(self.setH, utils.tileAngle(pos, node)),
+                                          self.posInterval(.3, (node[0] + .5, node[1] + .5, .0), name="walk")))
             pass
         print(actor_seq)
+
         actor_seq.start()
 
         pass

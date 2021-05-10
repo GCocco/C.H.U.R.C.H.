@@ -47,3 +47,12 @@ def dijkstra(start_node: Coord, target_node: Coord, matrix: dict[Coord, object])
         t = path[t]
         pass
     return ret_path
+
+
+def tileAngle(t1, t2) -> float:
+    val = (t1[0] - t2[0]) + (t1[1] - t2[1]) * 2
+    return {0: .0,
+            1: -90.0,
+            2: 0.0,
+            -2: 180.0,
+            -1: 90.0}[val]
